@@ -10,13 +10,14 @@ struct DruhKávy{
     unsigned int soucet()const{
         return ARABICA+ROBUSTA+LIBERICA+EXCELSA+SELENIUM82;
     }
-}; //myšleno jako díly jednotlivých druhů, třeba 2ku1ku0ku0 nevim
+};
 
 class Kafe{
     protected:
         DruhKávy druh;
+        bool decaf;
     public:
-    Kafe(DruhKávy k):druh(k) {
+    Kafe(DruhKávy k, bool dec):druh(k), decaf(dec){
         if (k.soucet()==0) {
             throw std::invalid_argument("Tak hele tam není žádné kafe");
         }
@@ -41,6 +42,9 @@ class Kafe{
     vypiš("Excelsa", druh.EXCELSA);
     vypiš("Selenium 82", druh.SELENIUM82);
     }
+    bool IsDecaf()const{
+        return decaf;
+    }
 };
 
 class Kapučíno:public Kafe{
@@ -55,7 +59,7 @@ class Amerikáno:public Kafe{
     private:
         unsigned int mnozstvi_vody;
     public:
-    Amerikáno(DruhKávy dr, int voda):Kafe(dr),mnozstvi_vody(voda){}
+    Amerikáno(DruhKávy dr,bool def, int voda):Kafe(dr,def),mnozstvi_vody(voda){}
     void vypij()override{
             std::cout<<"piju amerikáno s " << get_mnozstvi_vody() << " ml vody=).";
         }
@@ -75,7 +79,7 @@ class Espresso:public Kafe{
 class DekorujuKafe:public Kafe{
     private:
     static Kafe* kontrola_kafíčka(Kafe* k) {
-        if (k == nullptr) {
+        if (k->get_druh().soucet() == 0) {
             throw std::invalid_argument("Chyba dekorátoru: Nelze dekorovat prázdné kafe!");
         }
         return k; 
@@ -83,7 +87,7 @@ class DekorujuKafe:public Kafe{
     protected:
         Kafe *kafíčko;
     public:
-        DekorujuKafe(Kafe *k):Kafe(kontrola_kafíčka(k)->get_druh()), kafíčko(k) {
+        DekorujuKafe(Kafe *k):Kafe(kontrola_kafíčka(k)->get_druh(),k->IsDecaf()), kafíčko(k) {
         }
         void vypij()override{
             kafíčko->vypij();
@@ -148,8 +152,9 @@ int main(){
     meow.ARABICA=1;
     meow.EXCELSA=2;
     meow.SELENIUM82=10000;
-    Kafe* kf=new SeSušenkou(new SCukrem(new SMlíkem(new Amerikáno(meow,2), 100), 2));
+    Kafe* kf=new SeSušenkou(new SCukrem(new SMlíkem(new Amerikáno(meow,true,2), 100), 2));
     kf->vypij();
     kf->poměr_druhů();
+    kf->IsDecaf();
     delete kf;
 }
