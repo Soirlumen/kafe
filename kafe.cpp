@@ -152,9 +152,9 @@ int main(){
     meow.ARABICA=1;
     meow.EXCELSA=2;
     meow.SELENIUM82=10000;
-    Kafe* kf=new SeSušenkou(new SCukrem(new SMlíkem(new Amerikáno(meow,true,2), 100), 2));
+    Kafe* kf=new SCukrem(new SeSušenkou(new SCukrem(new SMlíkem(new Amerikáno(meow,true,2), 100), 2)),1);
     kf->vypij();
     kf->poměr_druhů();
-    kf->IsDecaf();
+    std::cout<<kf->IsDecaf();
     delete kf;
 }
